@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Metrology (Packaged Commodities) Enforcement Platform | DoCA</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-main: #F4FDF7;
+            --bg-sidebar: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-card-border: rgba(4, 120, 87, 0.18);
+            --text-main: #064E3B;
+            --text-muted: #334155;
+            --text-light: #475569;
+            --accent-primary: #047857;
+            --accent-hover: #065F46;
+            --accent-light: #ECFDF5;
+            --accent-border: #A7F3D0;
+            --accent-gradient: linear-gradient(135deg, #047857 0%, #064E3B 100%);
+            --success: #047857;
+            --success-bg: #ECFDF5;
+            --warning: #B45309;
+            --warning-bg: #FFFBEB;
+            --danger: #B91C1C;
+            --danger-bg: #FEF2F2;
+            --font-head: 'Outfit', sans-serif;
+            --font-body: 'Satoshi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::selection {
+            background: #A7F3D0;
+            color: #064E3B;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4FDF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A7F3D0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #047857;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Focus Ring */
+        button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* Top Application Bar */
+        .app-topbar {
+            height: 68px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--bg-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .logo-badge {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-title {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #064E3B;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-subtitle {
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        .server-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-border);
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #047857;
+            border-radius: 50%;
+        }
+
+        .topbar-center {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 2rem;
+        }
+
+        .global-search-input {
+            width: 100%;
+            background: #F8FAFC;
+            border: 1px solid #CBD5E1;
+            border-radius: 10px;
+            padding: 0.55rem 1rem 0.55rem 2.5rem;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .global-search-input:focus {
+            border-color: var(--accent-primary);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+        }
+
+        .search-icon-wrapper {
+            position: relative;
+        }
+
+        .search-icon-wrapper i {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        /* Web App Main Layout (Sidebar + Body) */
+        .app-layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Navigation */
+        .app-sidebar {
+            width: 250px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--bg-card-border);
+            padding: 1.75rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-section-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            letter-spacing: 0.06em;
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .sidebar-item {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .sidebar-item i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-primary);
+            background: var(--accent-light);
+            border-color: var(--accent-border);
+        }
+
+        .sidebar-item.active {
+            background: var(--accent-gradient);
+            color: #FFFFFF;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-item.active i {
+            color: #FFFFFF;
+        }
+
+        /* Main Workspace Content */
+        .app-content {
+            flex: 1;
+            padding: 1.75rem 2.25rem;
+            overflow-y: auto;
+        }
+
+        .breadcrumb-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .breadcrumb-bar span {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* White & Emerald Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 16px;
+            padding: 1.6rem;
+            margin-bottom: 1.6rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(4, 120, 87, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.35rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .card-title {
+            font-family: var(--font-head);
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .card-title i {
+            color: var(--accent-primary);
+        }
+
+        /* Grid Layouts */
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 1.75rem;
+        }
+
+        @media (max-width: 1100px) {
+            .app-sidebar { width: 75px; padding: 1.5rem 0.5rem; }
+            .sidebar-item span, .nav-section-label { display: none; }
+            .sidebar-item { justify-content: center; }
+            .scanner-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Upload Dropzone */
+        .upload-zone {
+            border: 2px dashed #A7F3D0;
+            border-radius: 14px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            background: var(--accent-light);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--accent-primary);
+            background: #D1FAE5;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .upload-icon {
+            font-size: 2.75rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.85rem;
+            transition: transform 0.25s ease;
+        }
+
+        .upload-zone:hover .upload-icon {
+            transform: translateY(-4px);
+        }
+
+        .upload-zone input[type="file"] {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+        }
+
+        /* Preset Sample Pills */
+        .sample-presets-bar {
+            margin-top: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .preset-pill {
+            background: #FFFFFF;
+            border: 1px solid var(--accent-border);
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #064E3B;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .preset-pill:hover {
+            border-color: var(--accent-primary);
+            color: #FFFFFF;
+            background: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #F8FAFC;
+            border: 1px solid #CBD5E1;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+        }
+
+        .btn-scan {
+            width: 100%;
+            padding: 0.95rem;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-family: var(--font-head);
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.35rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #065F46 0%, #064E3B 100%);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Annotated Image Viewer Canvas */
+        .image-viewer-container {
+            position: relative;
+            width: 100%;
+            background: #F8FAFC;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .image-wrapper {
+            position: relative;
+            max-width: 100%;
+            display: inline-block;
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            max-height: 480px;
+            display: block;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .bbox-overlay {
+            position: absolute;
+            border: 2px solid;
+            background: rgba(4, 120, 87, 0.1);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border-radius: 3px;
+        }
+
+        .bbox-overlay:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .badge-compliant { background: var(--success-bg); color: var(--success); border: 1px solid #A7F3D0; }
+        .badge-noncompliant { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #FDE68A; }
+
+        /* Score Meter Box */
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--accent-light);
+            border: 1px solid var(--accent-border);
+            padding: 1.35rem;
+            border-radius: 14px;
+            margin-bottom: 1.35rem;
+        }
+
+        .score-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: conic-gradient(#047857 0%, #E2E8F0 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .score-circle-inner {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-head);
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #064E3B;
+        }
+
+        /* Declarations Grid */
+        .declarations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .declaration-item {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .declaration-item:hover {
+            border-color: var(--accent-primary);
+            background: #FFFFFF;
+        }
+
+        .declaration-item .label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .declaration-item .val {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: #064E3B;
+            word-break: break-word;
+        }
+
+        /* Rules Matrix List */
+        .rule-list-item {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .rule-list-item.status-compliant {
+            border-left: 4px solid #047857;
+            background: #F4FDF8;
+        }
+
+        .rule-list-item.status-noncompliant {
+            border-left: 4px solid #B91C1C;
+            background: #FEF2F2;
+        }
+
+        .rule-list-item.status-warning {
+            border-left: 4px solid #B45309;
+            background: #FFFBEB;
+        }
+
+        .rule-info h4 {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #064E3B;
+            margin-bottom: 0.25rem;
+        }
+
+        .rule-info p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        /* Analytics Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.35rem;
+            margin-bottom: 1.6rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid var(--bg-card-border);
+            padding: 1.35rem;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card-green { background: linear-gradient(180deg, #ECFDF5 0%, #FFFFFF 65%); }
+        .stat-card-blue { background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 65%); }
+        .stat-card-red { background: linear-gradient(180deg, #FEF2F2 0%, #FFFFFF 65%); }
+        .stat-card-amber { background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 65%); }
+
+        .stat-card .num {
+            font-family: var(--font-head);
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #064E3B;
+            margin: 0.45rem 0 0.2rem 0;
+        }
+
+        .stat-card .lbl {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        /* Custom Table */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .custom-table th, .custom-table td {
+            padding: 0.95rem 1.15rem;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .custom-table th {
+            background: #F8FAFC;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .custom-table tr:hover td {
+            background: var(--accent-light);
+        }
+
+        .btn-action {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-border);
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-primary);
+            color: #FFFFFF;
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            border-top: 3px solid #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- App Topbar -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <div class="app-logo">
+                <div class="logo-badge">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div>
+                    <h1 class="logo-title">Legal Metrology Enforcement Platform</h1>
+                    <p class="logo-subtitle">Department of Consumer Affairs (DoCA) • Govt. of India</p>
+                </div>
+            </div>
+            <div class="server-status-pill">
+                <div class="status-dot"></div> Verification Engine Active
+            </div>
+        </div>
+
+    </header>
+
+    <!-- App Layout (Sidebar + Content) -->
+    <div class="app-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <div class="nav-section-label">ENFORCEMENT WORKSPACE</div>
+            <button class="sidebar-item active" onclick="switchTab('scanner')">
+                <i class="fa-solid fa-expand"></i> <span>Live Package Scanner</span>
+            </button>
+            <button class="sidebar-item" onclick="switchTab('repository')">
+                <i class="fa-solid fa-box-archive"></i> <span>Enforcement Log Repository</span>
+            </button>
+            <button class="sidebar-item" onclick="switchTab('analytics')">
+                <i class="fa-solid fa-chart-pie"></i> <span>Statutory Analytics</span>
+            </button>
+            
+            <div class="nav-section-label" style="margin-top: 1.75rem;">STATUTORY GUIDELINES</div>
+            <button class="sidebar-item" onclick="switchTab('rulebook')">
+                <i class="fa-solid fa-book-bookmark"></i> <span>Metrology Rules 2011</span>
+            </button>
+        </aside>
+
+        <!-- Main Content Workspace -->
+        <main class="app-content">
+            
+            <div class="breadcrumb-bar">
+                <span>DoCA Enforcement</span> / <span>Legal Metrology</span> / <span id="current-view-title">Live Package Scanner</span>
+            </div>
+
+            <!-- TAB 1: LIVE SCANNER -->
+            <div id="tab-scanner" class="tab-content active">
+                <div class="scanner-grid">
+                    
+                    <!-- Left Panel: Upload & Presets -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-camera"></i> Package Scan & Verification
+                                </div>
+                            </div>
+
+                            <div class="upload-zone" id="drop-zone">
+                                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                <h2 style="font-size: 1.1rem; font-weight: 700; color: #064E3B; margin-bottom: 0.4rem;">Upload Package Photograph</h2>
+                                <p style="font-size: 0.84rem; color: var(--text-muted);">Drag & drop packaged commodity photo or click to browse (JPG, PNG)</p>
+                                <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                            </div>
+
+                            <div id="file-preview-info" style="display: none; margin-top: 1.1rem; padding: 0.85rem; background: var(--accent-light); border: 1px solid var(--accent-border); border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: var(--accent-primary);">
+                                <i class="fa-solid fa-image"></i> Selected: <span id="file-name-span"></span>
+                            </div>
+
+                            <button class="btn-scan" id="scan-btn" onclick="executeScan()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Execute Statutory Compliance Scan
+                            </button>
+                        </div>
+
+                        <!-- Scan Overview Card -->
+                        <div class="card" id="scan-summary-card" style="display: none;">
+                            <div class="card-header">
+                                <div class="card-title"><i class="fa-solid fa-clipboard-check"></i> Packaging Inspection Summary</div>
+                                <span id="overall-badge" class="badge badge-compliant">Compliant</span>
+                            </div>
+
+                            <div class="score-box">
+                                <div class="score-circle" id="score-circle-bg">
+                                    <div class="score-circle-inner" id="score-text">100%</div>
+                                </div>
+                                <div>
+                                    <h3 id="product-name-heading" style="font-family: var(--font-head); font-size: 1.15rem; font-weight: 700; color: #064E3B; margin-bottom: 0.25rem;">Product Name</h3>
+                                    <p id="scan-ref-text" style="font-size: 0.82rem; color: var(--text-muted);">Ref: LM-2026-X102</p>
+                                    <p id="rules-passed-text" style="font-size: 0.88rem; font-weight: 700; color: var(--success); margin-top: 0.35rem;">9/9 Rules Passed</p>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 0.8rem;">
+                                <a id="download-pdf-btn" href="#" target="_blank" class="btn-action" style="width: 100%; justify-content: center; padding: 0.8rem; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-file-pdf"></i> Download Official DoCA PDF Notice & Report
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Bounding Box Inspector & Results -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title"><i class="fa-solid fa-eye"></i> 2D Package Bounding Box Visual Inspection</div>
+                                <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Hover bounding boxes to inspect OCR text</span>
+                            </div>
+
+                            <div class="image-viewer-container">
+                                <div id="image-placeholder" style="text-align: center; color: var(--text-muted); padding: 3.5rem;">
+                                    <i class="fa-solid fa-image" style="font-size: 3.2rem; margin-bottom: 1rem; color: #A7F3D0;"></i>
+                                    <p style="font-weight: 600; color: #064E3B;">Upload a package photograph to view 2D bounding boxes</p>
+                                </div>
+                                <div class="image-wrapper" id="image-wrapper" style="display: none;">
+                                    <img id="scan-img-display" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" alt="Package Image">
+                                    <div id="overlay-container"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Declarations Breakdown -->
+                        <div class="card" id="declarations-card" style="display: none;">
+                            <div class="card-header">
+                                <div class="card-title"><i class="fa-solid fa-list-check"></i> Extracted Mandatory Packaging Declarations</div>
+                            </div>
+                            <div class="declarations-grid" id="declarations-container"></div>
+                        </div>
+
+                        <!-- 9-Point Compliance Matrix -->
+                        <div class="card" id="rules-card" style="display: none;">
+                            <div class="card-header">
+                                <div class="card-title"><i class="fa-solid fa-gavel"></i> 9-Point Statutory Compliance Evaluation Matrix</div>
+                            </div>
+                            <div id="rules-matrix-container"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: REPOSITORY & HISTORY -->
+            <div id="tab-repository" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-database"></i> Scanned Packaged Commodities Audit Log</div>
+                        <div style="display: flex; gap: 0.8rem;">
+                            <input type="text" id="search-repo" class="form-control" placeholder="Search commodity, brand, barcode..." style="width: 260px;" onkeyup="filterRepository()">
+                            <select id="filter-status" class="form-control" style="width: 170px;" onchange="filterRepository()">
+                                <option value="ALL">All Compliance Statuses</option>
+                                <option value="COMPLIANT">Compliant</option>
+                                <option value="NON_COMPLIANT">Non-Compliant</option>
+                                <option value="WARNING">Warning</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Scan Reference</th>
+                                <th>Inspection Timestamp</th>
+                                <th>Brand & Commodity</th>
+                                <th>Score</th>
+                                <th>Compliance Status</th>
+                                <th>Inspection PDF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repo-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: ANALYTICS DASHBOARD -->
+            <div id="tab-analytics" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card stat-card-green">
+                        <i class="fa-solid fa-boxes-stacked" style="color: var(--accent-primary); font-size: 1.6rem;"></i>
+                        <div class="num" id="stat-total">0</div>
+                        <div class="lbl">Total Packaged Goods Scanned</div>
+                    </div>
+                    <div class="stat-card stat-card-green">
+                        <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.6rem;"></i>
+                        <div class="num" id="stat-compliant" style="color: var(--success);">0</div>
+                        <div class="lbl">Fully Compliant Packages</div>
+                    </div>
+                    <div class="stat-card stat-card-red">
+                        <i class="fa-solid fa-circle-xmark" style="color: var(--danger); font-size: 1.6rem;"></i>
+                        <div class="num" id="stat-noncompliant" style="color: var(--danger);">0</div>
+                        <div class="lbl">Statutory Violation Offences</div>
+                    </div>
+                    <div class="stat-card stat-card-amber">
+                        <i class="fa-solid fa-percent" style="color: var(--warning); font-size: 1.6rem;"></i>
+                        <div class="num" id="stat-rate" style="color: var(--warning);">0%</div>
+                        <div class="lbl">Overall Enforcement Compliance Rate</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.6rem;">
+                    <div class="card">
+                        <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> Statutory Status Distribution</div></div>
+                        <div style="max-width: 320px; margin: 0 auto;">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-bar"></i> Top Packaging Rule Violations under Rules 2011</div></div>
+                        <div>
+                            <canvas id="barChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: RULEBOOK REFERENCE -->
+            <div id="tab-rulebook" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-scale-unbalanced-flip"></i> Legal Metrology (Packaged Commodities) Rules, 2011 Guidelines</div>
+                    </div>
+                    <div id="rules-catalog-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.35rem;"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let pieChartInst = null;
+        let barChartInst = null;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            const titles = {
+                'scanner': 'Live Package Scanner',
+                'repository': 'Enforcement Log Repository',
+                'analytics': 'Statutory Compliance Analytics',
+                'rulebook': 'Legal Metrology Rules 2011'
+            };
+
+            document.getElementById('current-view-title').innerText = titles[tabId] || 'Workspace';
+
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            if (tabId === 'repository') loadRepository();
+            if (tabId === 'analytics') loadAnalytics();
+            if (tabId === 'rulebook') loadRulebook();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('drop-zone');
+            if (dropZone) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.add('drag-over');
+                    }, false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.remove('drag-over');
+                    }, false);
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    if (files && files.length > 0) {
+                        currentFile = files[0];
+                        document.getElementById('file-preview-info').style.display = 'block';
+                        document.getElementById('file-name-span').innerText = currentFile.name;
+                    }
+                }, false);
+            }
+        });
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                currentFile = files[0];
+                document.getElementById('file-preview-info').style.display = 'block';
+                document.getElementById('file-name-span').innerText = currentFile.name;
+            }
+        }
+
+        async function executeScan() {
+            if (!currentFile) {
+                alert("Please upload a package photograph to scan.");
+                return;
+            }
+
+            const btn = document.getElementById('scan-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner"></div> Executing Statutory Metrology Inspection...`;
+
+            const inspectorElem = document.getElementById('inspector-input');
+            const inspector = inspectorElem ? inspectorElem.value : "Official Inspector (DoCA)";
+            const formData = new FormData();
+            formData.append("file", currentFile);
+
+            try {
+                const res = await fetch(`/api/scan?inspector_name=${encodeURIComponent(inspector)}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    renderScanResult(data);
+                } else {
+                    alert("Scan Error: " + (data.detail || "Server failed to process package image."));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection error while reaching legal metrology scan engine.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Execute Statutory Compliance Scan`;
+            }
+        }
+
+        function renderScanResult(data) {
+            document.getElementById('scan-summary-card').style.display = 'block';
+            document.getElementById('declarations-card').style.display = 'block';
+            document.getElementById('rules-card').style.display = 'block';
+
+            document.getElementById('product-name-heading').innerText = `${data.brand} - ${data.product_name}`;
+            document.getElementById('scan-ref-text').innerText = `Ref: ${data.scan_ref}`;
+            document.getElementById('rules-passed-text').innerText = `${data.passed_rules}/9 Rules Passed`;
+
+            const badge = document.getElementById('overall-badge');
+            badge.className = `badge badge-${data.overall_status.toLowerCase()}`;
+            badge.innerText = data.overall_status;
+
+            const scoreText = document.getElementById('score-text');
+            scoreText.innerText = `${data.compliance_score}%`;
+            document.getElementById('score-circle-bg').style.background = 
+                `conic-gradient(#047857 ${data.compliance_score}%, #E2E8F0 ${data.compliance_score}%)`;
+
+            document.getElementById('download-pdf-btn').href = data.report_url || '#';
+
+            const imgDisplay = document.getElementById('scan-img-display');
+            const placeholder = document.getElementById('image-placeholder');
+            const wrapper = document.getElementById('image-wrapper');
+
+            placeholder.style.display = 'none';
+            wrapper.style.display = 'inline-block';
+            imgDisplay.src = data.image_url;
+
+            imgDisplay.onload = () => {
+                renderBoundingBoxes(data.bounding_boxes, imgDisplay);
+            };
+
+            const declContainer = document.getElementById('declarations-container');
+            declContainer.innerHTML = '';
+            const fieldLabels = {
+                "product_name": "Commodity Name / Description",
+                "brand": "Manufacturer Brand Name",
+                "manufacturer": "Manufacturer Name",
+                "manufacturer_address": "Manufacturer Registered Address",
+                "net_quantity": "Net Quantity / Weight / Volume",
+                "mrp": "Maximum Retail Price (MRP)",
+                "unit_sale_price": "Unit Sale Price (USP)",
+                "batch_number": "Batch / Lot Number",
+                "manufacturing_date": "Date of Manufacture / Import",
+                "expiry_date": "Best Before / Expiry Date",
+                "consumer_care": "Consumer Care Details",
+                "country_of_origin": "Country of Origin"
+            };
+
+            for (const [key, val] of Object.entries(data.declarations)) {
+                if (fieldLabels[key]) {
+                    declContainer.innerHTML += `
+                        <div class="declaration-item">
+                            <div class="label">${fieldLabels[key]}</div>
+                            <div class="val">${val || '<span style="color: #475569; font-weight: 500;"><i>Not Detected</i></span>'}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            const rulesContainer = document.getElementById('rules-matrix-container');
+            rulesContainer.innerHTML = '';
+            data.rules_evaluation.forEach(r => {
+                const stClass = r.status === 'COMPLIANT' ? 'badge-compliant' : (r.status === 'NON_COMPLIANT' ? 'badge-noncompliant' : 'badge-warning');
+                rulesContainer.innerHTML += `
+                    <div class="rule-list-item status-${r.status.toLowerCase()}">
+                        <div class="rule-info">
+                            <h4>${r.legal_section} • ${r.rule_name}</h4>
+                            <p>${r.message}</p>
+                            ${r.legal_penalty ? `<p style="color: #B91C1C; margin-top: 0.25rem; font-weight: 600;"><b>Statutory Action:</b> ${r.legal_penalty}</p>` : ''}
+                        </div>
+                        <div>
+                            <span class="badge ${stClass}">${r.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderBoundingBoxes(boxes, imgElement) {
+            const container = document.getElementById('overlay-container');
+            container.innerHTML = '';
+
+            const naturalWidth = imgElement.naturalWidth || 800;
+            const naturalHeight = imgElement.naturalHeight || 1000;
+            const displayWidth = imgElement.clientWidth;
+            const displayHeight = imgElement.clientHeight;
+
+            const scaleX = displayWidth / naturalWidth;
+            const scaleY = displayHeight / naturalHeight;
+
+            boxes.forEach(item => {
+                const [x1, y1, x2, y2] = item.box;
+                const left = x1 * scaleX;
+                const top = y1 * scaleY;
+                const width = (x2 - x1) * scaleX;
+                const height = (y2 - y1) * scaleY;
+
+                const div = document.createElement('div');
+                div.className = 'bbox-overlay';
+                div.style.left = `${left}px`;
+                div.style.top = `${top}px`;
+                div.style.width = `${width}px`;
+                div.style.height = `${height}px`;
+                div.style.borderColor = item.color;
+                div.title = `${item.field || 'OCR Declaration'}: ${item.text}`;
+
+                container.appendChild(div);
+            });
+        }
+
+        async function loadRepository() {
+            try {
+                const res = await fetch('/api/inspections');
+                const data = await res.json();
+                const tbody = document.getElementById('repo-table-body');
+                tbody.innerHTML = '';
+
+                data.forEach(item => {
+                    const stClass = item.overall_status === 'COMPLIANT' ? 'badge-compliant' : (item.overall_status === 'NON_COMPLIANT' ? 'badge-noncompliant' : 'badge-warning');
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b style="color: #064E3B;">${item.scan_ref}</b></td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">${item.created_at || '-'}</td>
+                            <td><b style="color: #064E3B;">${item.brand}</b> - ${item.product_name}</td>
+                            <td><b style="color: #047857;">${item.compliance_score}%</b></td>
+                            <td><span class="badge ${stClass}">${item.overall_status}</span></td>
+                            <td>
+                                ${item.report_url ? `<a href="${item.report_url}" target="_blank" class="btn-action"><i class="fa-solid fa-file-pdf"></i> Download PDF</a>` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Failed to load inspection repository", err);
+            }
+        }
+
+        async function filterRepository() {
+            const search = document.getElementById('search-repo').value;
+            const status = document.getElementById('filter-status').value;
+            try {
+                const res = await fetch(`/api/inspections?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+                const data = await res.json();
+                const tbody = document.getElementById('repo-table-body');
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    const stClass = item.overall_status === 'COMPLIANT' ? 'badge-compliant' : (item.overall_status === 'NON_COMPLIANT' ? 'badge-noncompliant' : 'badge-warning');
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b style="color: #064E3B;">${item.scan_ref}</b></td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">${item.created_at || '-'}</td>
+                            <td><b style="color: #064E3B;">${item.brand}</b> - ${item.product_name}</td>
+                            <td><b style="color: #047857;">${item.compliance_score}%</b></td>
+                            <td><span class="badge ${stClass}">${item.overall_status}</span></td>
+                            <td>
+                                ${item.report_url ? `<a href="${item.report_url}" target="_blank" class="btn-action"><i class="fa-solid fa-file-pdf"></i> Download PDF</a>` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function handleGlobalSearch(e) {
+            if (e.key === 'Enter') {
+                const query = e.target.value;
+                switchTab('repository');
+                document.getElementById('search-repo').value = query;
+                filterRepository();
+            }
+        }
+
+        async function loadAnalytics() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const stats = await res.json();
+
+                document.getElementById('stat-total').innerText = stats.total_scans;
+                document.getElementById('stat-compliant').innerText = stats.compliant_count;
+                document.getElementById('stat-noncompliant').innerText = stats.non_compliant_count;
+                document.getElementById('stat-rate').innerText = `${stats.compliance_rate}%`;
+
+                const pieCtx = document.getElementById('pieChart').getContext('2d');
+                if (pieChartInst) pieChartInst.destroy();
+                pieChartInst = new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Compliant', 'Non-Compliant', 'Warning'],
+                        datasets: [{
+                            data: [stats.compliant_count, stats.non_compliant_count, stats.warning_count],
+                            backgroundColor: ['#047857', '#B91C1C', '#B45309']
+                        }]
+                    },
+                    options: { plugins: { legend: { labels: { color: '#064E3B', font: { weight: 'bold' } } } } }
+                });
+
+                const barCtx = document.getElementById('barChart').getContext('2d');
+                if (barChartInst) barChartInst.destroy();
+                const labels = stats.top_violations.map(v => v.rule);
+                const counts = stats.top_violations.map(v => v.count);
+
+                barChartInst = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels.length ? labels : ['No Violations Recorded'],
+                        datasets: [{
+                            label: 'Statutory Violation Occurrences',
+                            data: counts.length ? counts : [0],
+                            backgroundColor: '#047857',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { ticks: { color: '#334155', font: { weight: 'bold' } } },
+                            x: { ticks: { color: '#334155', font: { weight: 'bold' } } }
+                        },
+                        plugins: { legend: { labels: { color: '#064E3B', font: { weight: 'bold' } } } }
+                    }
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadRulebook() {
+            try {
+                const res = await fetch('/api/rules');
+                const rules = await res.json();
+                const container = document.getElementById('rules-catalog-container');
+                container.innerHTML = '';
+
+                rules.forEach(r => {
+                    container.innerHTML += `
+                        <div style="background: #FFFFFF; border: 1px solid var(--bg-card-border); border-radius: 14px; padding: 1.35rem; box-shadow: var(--shadow-sm);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+                                <span style="font-size: 0.82rem; font-weight: 800; color: var(--accent-primary);">${r.section}</span>
+                                <span class="badge badge-warning">${r.severity}</span>
+                            </div>
+                            <h3 style="font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: #064E3B; margin-bottom: 0.45rem;">${r.name}</h3>
+                            <p style="font-size: 0.86rem; color: var(--text-muted); line-height: 1.45;">${r.description}</p>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
