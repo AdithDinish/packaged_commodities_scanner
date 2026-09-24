@@ -1,4 +1,4 @@
-# 🏷️ Legal Metrology Packaged Commodities Scanner
+#  Legal Metrology Packaged Commodities Scanner
 
 An AI-powered computer vision and rule-evaluation system for automating packaged commodity label inspections under the **Legal Metrology Act, 2009** and **Legal Metrology (Packaged Commodities) Rules, 2011**, Government of India.
 
@@ -6,10 +6,10 @@ Designed for Enforcement Officials, Legal Metrology Inspectors, and Quality Audi
 
 ---
 
-## 🚀 Features
+##  Features
 
-- **🔍 Automated Deep OCR Extraction**: Powered by PaddleOCR for high-precision text detection and 2D bounding box spatial mapping on complex packaging labels.
-- **⚖️ 9-Point Mandatory Declaration Evaluator**: Evaluates label compliance across statutory requirements:
+- ** Automated Deep OCR Extraction**: Powered by PaddleOCR for high-precision text detection and 2D bounding box spatial mapping on complex packaging labels.
+- ** 9-Point Mandatory Declaration Evaluator**: Evaluates label compliance across statutory requirements:
   1. **Manufacturer / Packer / Importer Details**: Full statutory address and business entity declaration.
   2. **Generic / Common Name**: Clear identification of packaged commodity.
   3. **Net Quantity & Units**: Standardized measurement unit validation (g, kg, ml, L, N).
@@ -19,17 +19,17 @@ Designed for Enforcement Officials, Legal Metrology Inspectors, and Quality Audi
   7. **Consumer Care Details**: Helpline number, email, and address availability.
   8. **Country of Origin**: Mandatory origin statement for imported commodities.
   9. **Statutory Font Height**: Verification of text size compliance based on PDP (Principal Display Panel) area.
-- **🎨 Interactive Bounding Box Inspection**: Visual overlay mapping extracted text regions with status colors:
-  - 🟢 **Green (`#10B981`)**: Compliant Mandatory Declaration
-  - 🔴 **Red (`#EF4444`)**: Non-Compliant / Statutory Violation
-  - 🟡 **Amber (`#F59E0B`)**: Missing or Ambiguous Mandatory Field
-- **📑 Official Digital Inspection PDF Report**: Automatic PDF report generation under Section 36 of the Legal Metrology Act, 2009, complete with officer sign-off fields, violation summary, and annotated packaging snapshots.
-- **📊 Enforcement Analytics Dashboard**: High-level visual statistics tracking total inspections, compliance rates, and top statutory violations via Chart.js.
-- **💾 Inspection Repository**: Built-in SQLite database powered by SQLAlchemy for indexing, searching, and managing past inspection records.
+- ** Interactive Bounding Box Inspection**: Visual overlay mapping extracted text regions with status colors:
+  -  **Green (`#10B981`)**: Compliant Mandatory Declaration
+  -  **Red (`#EF4444`)**: Non-Compliant / Statutory Violation
+  -  **Amber (`#F59E0B`)**: Missing or Ambiguous Mandatory Field
+- ** Official Digital Inspection PDF Report**: Automatic PDF report generation under Section 36 of the Legal Metrology Act, 2009, complete with officer sign-off fields, violation summary, and annotated packaging snapshots.
+- ** Enforcement Analytics Dashboard**: High-level visual statistics tracking total inspections, compliance rates, and top statutory violations via Chart.js.
+- ** Inspection Repository**: Built-in SQLite database powered by SQLAlchemy for indexing, searching, and managing past inspection records.
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 packaged_commodities_scanner/
@@ -65,7 +65,7 @@ packaged_commodities_scanner/
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Backend**: Python 3.10+, FastAPI, Uvicorn, SQLAlchemy, SQLite
 - **Computer Vision & OCR**: PaddleOCR, OpenCV, Pillow (PIL)
@@ -76,7 +76,7 @@ packaged_commodities_scanner/
 
 ---
 
-## 💻 Quick Start
+##  Quick Start
 
 ### 1. Prerequisites
 
@@ -132,7 +132,7 @@ Open your browser and navigate to `http://localhost:8000` to access the Packaged
 
 ---
 
-## 🧪 Running Tests
+##  Running Tests
 
 Run the unit and integration test suite with pytest:
 
@@ -142,7 +142,7 @@ pytest backend/tests
 
 ---
 
-## ⚖️ Statutory Framework Reference
+##  Statutory Framework Reference
 
 This software enforces rules established under:
 1. **The Legal Metrology Act, 2009** (Act No. 1 of 2010), Section 36.
@@ -150,6 +150,6 @@ This software enforces rules established under:
 
 ---
 
-## 📜 License
+##  License
 
 Developed for Department of Consumer Affairs enforcement and compliance auditing. All rights reserved.
